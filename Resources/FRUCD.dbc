@@ -1,0 +1,260 @@
+VERSION ""
+
+
+NS_ :
+    NS_DESC_
+    CM_
+    BA_DEF_
+    BA_
+    VAL_
+    CAT_DEF_
+    CAT_
+    FILTER
+    BA_DEF_DEF_
+    EV_DATA_
+    ENVVAR_DATA_
+    SGTYPE_
+    SGTYPE_VAL_
+    BA_DEF_SGTYPE_
+    BA_SGTYPE_
+    SIG_TYPE_REF_
+    VAL_TABLE_
+    SIG_GROUP_
+    SIG_VALTYPE_
+    SIGTYPE_VALTYPE_
+    BO_TX_BU_
+    BA_DEF_REL_
+    BA_REL_
+    BA_DEF_DEF_REL_
+    BU_SG_REL_
+    BU_EV_REL_
+    BU_BO_REL_
+    SG_MUL_VAL_
+
+BS_: 
+BU_: Dashboard PEI TelemNode Xsens TelemHost 
+BO_ 1894 Vehicle_State: 7 Dashboard
+   SG_ Dashboard_HV_Requested : 7|8@0+ (1,0) [0|1] "" Vector__XXX
+   SG_ Dashboard_Throttle1_Level : 15|8@0+ (1,0) [0|100] "%" Vector__XXX
+   SG_ Dashboard_Throttle2_Level : 23|8@0+ (1,0) [0|100] "%" Vector__XXX
+   SG_ Dashboard_Brake_Level : 31|8@0+ (1,0) [0|100] "%" Vector__XXX
+   SG_ Dashboard_State : 39|8@0+ (1,0) [0|255] "" Vector__XXX
+   SG_ Dashboard_VCU_Ticks : 47|16@0+ (1,0) [0|65535] "ms" Vector__XXX
+
+BO_ 896 BMS_Status: 5 PEI
+   SG_ PEI_BMS_Status : 7|8@0+ (1,0) [0|255] "" Vector__XXX
+   SG_ PEI_SPI_Error_Flags : 15|16@0+ (1,0) [0|65535] "" Vector__XXX
+   SG_ PEI_Max_Faulting_IC_Address : 31|8@0+ (1,0) [0|9] "" Vector__XXX
+   SG_ PEI_Communication_Break_ID : 39|8@0- (1,0) [-1|9] "" Vector__XXX
+
+BO_ 903 Status: 5 PEI
+   SG_ PEI_IMD_OK : 5|1@0+ (1,0) [0|1] "" Vector__XXX
+   SG_ PEI_BMS_OK : 4|1@0+ (1,0) [0|1] "" Vector__XXX
+   SG_ PEI_SHUTDOWN_FINAL : 3|1@0+ (1,0) [0|1] "" Vector__XXX
+   SG_ PEI_AIR_NEG : 2|1@0+ (1,0) [0|1] "" Vector__XXX
+   SG_ PEI_AIR_POS : 1|1@0+ (1,0) [0|1] "" Vector__XXX
+   SG_ PEI_PRECHARGE : 0|1@0+ (1,0) [0|1] "" Vector__XXX
+   SG_ PEI_Current_ADC : 15|16@0+ (1,0) [0|65535] "Raw_ADC" Vector__XXX
+   SG_ PEI_Current_Reference : 31|16@0- (1,0) [-2048|2047] "Raw_ADC" Vector__XXX
+
+BO_ 1024 Cooling_Loop_Temps: 8 TelemNode
+   SG_ TelemNode_Inlet_Water_Temp : 7|16@0- (0.1,0) [-3276.8|3276.7] "C" Vector__XXX
+   SG_ TelemNode_Outlet_Water_Temp : 23|16@0- (0.1,0) [-3276.8|3276.7] "C" Vector__XXX
+   SG_ TelemNode_Air_Into_Radiator_Temp : 39|16@0- (0.1,0) [-3276.8|3276.7] "C" Vector__XXX
+   SG_ TelemNode_Air_Out_Of_Radiator_Temp : 55|16@0- (0.1,0) [-3276.8|3276.7] "C" Vector__XXX
+
+BO_ 1026 Cool_Loop_Pressures: 4 TelemNode
+   SG_ TelemNode_Inlet_Water_Pressure : 7|16@0+ (0.01,0) [0|1] "PSI" Vector__XXX
+   SG_ TelemNode_Outlet_Water_Pressure : 23|16@0+ (0.01,0) [0|1] "PSI" Vector__XXX
+
+BO_ 1025 Wheel_Speed_Rear: 4 TelemNode
+   SG_ TelemNode_Wheel_Speed_Rear_Right : 7|16@0+ (1,0) [0|65535] "CPS/RPM" Vector__XXX
+   SG_ TelemNode_Wheel_Speed_Rear_Left : 23|16@0+ (1,0) [0|65535] "CPS/RPM" Vector__XXX
+
+BO_ 192 Torque_Request: 8 Dashboard
+   SG_ Dashboard_Torque : 0|16@1- (0.1,0) [-3276.8|3276.7] "Nm" Vector__XXX
+   SG_ Dashboard_Speed : 16|16@1+ (1,0) [0|65535] "RPM" Vector__XXX
+   SG_ Dashboard_Direction : 32|8@1+ (1,0) [0|1] "" Vector__XXX
+   SG_ Dashboard_Inverter_Enable : 40|1@1+ (1,0) [0|1] "" Vector__XXX
+   SG_ Dashboard_Discharge_Enable : 41|1@1+ (1,0) [0|1] "" Vector__XXX
+   SG_ Dashboard_Speed_Mode_Enable : 42|1@1+ (1,0) [0|1] "" Vector__XXX
+   SG_ Dashboard_Torque_Limit : 48|16@1+ (0.1,0) [0|6553.5] "Nm" Vector__XXX
+
+BO_ 1280 Random_Shit: 6 Dashboard
+   SG_ Dashboard_Front_Strain_Gauge : 7|16@0+ (1,0) [0|65535] "" Vector__XXX
+   SG_ Dashboard_Front_Wheel_Speed : 23|16@0+ (1,0) [0|65535] "RPM" Vector__XXX
+   SG_ Dashboard_TC_Torque_Request : 39|16@0+ (0.1,0) [0|6553.5] "Nm" Vector__XXX
+
+BO_ 897 Diagnostic_BMS_Data: 4 PEI
+   SG_ PEI_HI_Temp : 7|8@0+ (1,0) [0|255] "C" Vector__XXX
+   SG_ PEI_SOC : 15|8@0+ (1,0) [0|100] "%" Vector__XXX
+   SG_ PEI_Pack_Voltage : 23|16@0- (1,0) [-32768|32767] "V" Vector__XXX
+
+BO_ 1027 Strain_Gauges_Rear: 8 TelemNode
+   SG_ TelemNode_RL_Toe_Strain_Gauge : 7|16@0+ (1,0) [0|65535] "" Vector__XXX
+   SG_ TelemNode_RLUF_A_Arm_Strain_Gauge : 23|16@0+ (1,0) [0|65535] "" Vector__XXX
+   SG_ TelemNode_RLUB_A_Arm_Strain_Gauge : 39|16@0+ (1,0) [0|65535] "" Vector__XXX
+   SG_ TelemNode_RLLF_A_Arm_Strain_Gauge : 55|16@0+ (1,0) [0|65535] "" Vector__XXX
+
+BO_ 1281 Inputs: 3 Dashboard
+   SG_ Dashboard_Knob1 : 7|8@0+ (1,0) [0|100] "" Vector__XXX
+   SG_ Dashboard_Knob2 : 15|8@0+ (1,0) [0|100] "" Vector__XXX
+   SG_ Dashboard_DISPLAY_MODE : 20|2@0+ (1,0) [0|1] "" Vector__XXX
+   SG_ Dashboard_TC : 18|1@0+ (1,0) [0|1] "" Vector__XXX
+   SG_ Dashboard_MARKER : 17|1@0+ (1,0) [0|1] "" Vector__XXX
+   SG_ Dashboard_OVERTAKE : 16|1@0+ (1,0) [0|1] "" Vector__XXX
+
+BO_ 904 Current: 4 PEI
+   SG_ PEI_Current : 7|16@0- (0.01,0) [-327.68|327.67] "A" Vector__XXX
+
+BO_ 898 High_Level_BMS_Data: 6 PEI
+   SG_ PEI_HI_Temp : 7|16@0+ (0.001,0) [0|65.535] "C" Vector__XXX
+   SG_ PEI_Pack_Voltage : 23|16@0+ (0.01,0) [0|655.35] "V" Vector__XXX
+   SG_ Pack_Balance : 39|16@0+ (1e-05,0) [0|0.65535] "V" Vector__XXX
+
+BO_ 899 BMS_Subpack_Data: 5 PEI
+   SG_ PEI_Subpack : 7|8@0+ (1,0) [0|4] "" Vector__XXX
+   SG_ PEI_Subpack_Voltage : 15|16@0+ (0.01,0) [0|655.35] "V" Vector__XXX
+   SG_ PEI_Subpack_Balance : 31|16@0+ (1e-05,0) [0|0.65535] "V" Vector__XXX
+
+BO_ 900 BMS_Temps: 8 PEI
+   SG_ PEI_Subpack : 7|8@0+ (1,0) [0|4] "" Vector__XXX
+   SG_ PEI_Group : 15|8@0+ (1,0) [0|7] "" Vector__XXX
+   SG_ PEI_Temp_1 : 23|16@0+ (0.001,0) [0|65.535] "C" Vector__XXX
+   SG_ PEI_Temp_2 : 39|16@0+ (0.001,0) [0|65.535] "C" Vector__XXX
+   SG_ PEI_Temp_3 : 55|16@0+ (0.001,0) [0|65.535] "C" Vector__XXX
+
+BO_ 1282 Raw_Pedals: 8 Dashboard
+   SG_ Dashboard_Throttle_1 : 7|16@0+ (1,0) [0|65535] "" Vector__XXX
+   SG_ Dashboard_Throttle_2 : 23|16@0+ (1,0) [0|65535] "" Vector__XXX
+   SG_ Dashboard_Brake_1 : 39|16@0+ (1,0) [0|65535] "" Vector__XXX
+   SG_ Dashboard_Brake_2 : 55|16@0+ (1,0) [0|65535] "" Vector__XXX
+
+BO_ 1284 MCAC_Power: 8 Dashboard
+   SG_ Motor_Power : 7|32@0- (1,0) [-200000|200000] "Watts" Vector__XXX
+   SG_ Acc_Power : 39|32@0- (1,0) [-200000|200000] "Watts" Vector__XXX
+
+BO_ 257 UTC_Time: 8 Xsens
+   SG_ nanoseconds : 7|32@0+ (1,0) [0|4.29497e+09] "ns" Vector__XXX
+   SG_ hour : 39|8@0+ (1,0) [0|24] "hour" Vector__XXX
+   SG_ minute : 47|8@0+ (1,0) [0|60] "" Vector__XXX
+   SG_ second : 55|8@0+ (1,0) [0|60] "" Vector__XXX
+   SG_ utc_flags : 63|8@0+ (1,0) [0|255] "" Vector__XXX
+
+BO_ 258 Packet_Count: 2 Xsens
+   SG_ packet_count : 7|16@0+ (1,0) [0|65535] "" Vector__XXX
+
+BO_ 262 Euler: 6 Xsens
+   SG_ angle_x : 7|16@0- (0.01,0) [-100000|100000] "" Vector__XXX
+   SG_ angle_y : 23|16@0- (0.01,0) [-100000|100000] "" Vector__XXX
+   SG_ angle_z : 39|16@0- (0.01,0) [-100000|100000] "" Vector__XXX
+
+BO_ 274 Delta_Q: 8 Xsens
+   SG_ delta1 : 7|16@0- (0.01,0) [-100000|100000] "" Vector__XXX
+   SG_ delta2 : 23|16@0- (0.01,0) [-100000|100000] "" Vector__XXX
+   SG_ delta3 : 39|16@0- (0.01,0) [-100000|100000] "" Vector__XXX
+   SG_ delta4 : 55|16@0+ (0.01,0) [-100000|100000] "" Vector__XXX
+
+BO_ 295 Lat_Lon: 8 Xsens
+   SG_ latitude : 7|32@0- (0.0001,0) [-1e+07|1e+07] "degrees" Vector__XXX
+   SG_ longitude : 39|32@0- (0.0001,0) [-1e+07|1e+07] "degrees" Vector__XXX
+
+BO_ 275 Acceleration: 6 Xsens
+   SG_ accel_x : 7|16@0- (0.01,0) [-100000|100000] "m/s^2" Vector__XXX
+   SG_ accel_y : 23|16@0- (0.01,0) [-100000|100000] "m/s^2" Vector__XXX
+   SG_ accel_z : 39|16@0- (0.01,0) [-100000|100000] "m/s^2" Vector__XXX
+
+BO_ 276 Free_Acceleration: 6 Xsens
+   SG_ free_accel_x : 7|16@0- (0.01,0) [-100000|100000] "m/s^2" Vector__XXX
+   SG_ free_accel_y : 23|16@0- (0.01,0) [-100000|100000] "m/s^2" Vector__XXX
+   SG_ free_accel_z : 39|16@0- (0.01,0) [-100000|100000] "m/s^2" Vector__XXX
+
+BO_ 273 Delta_V: 6 Xsens
+   SG_ delta_v_x : 7|16@0- (0.01,0) [-100000|100000] "m/s" Vector__XXX
+   SG_ delta_v_y : 23|16@0- (0.01,0) [-100000|100000] "m/s" Vector__XXX
+   SG_ delta_v_z : 39|16@0- (0.01,0) [-100000|100000] "m/s" Vector__XXX
+
+BO_ 297 Velocity_XYZ: 6 Xsens
+   SG_ velocity_x : 7|16@0- (0.01,0) [-100000|100000] "m/s" Vector__XXX
+   SG_ velocity_y : 23|16@0- (0.01,0) [-100000|100000] "m/s" Vector__XXX
+   SG_ velocity_z : 39|16@0- (0.01,0) [-100000|100000] "m/s" Vector__XXX
+
+BO_ 278 Rate_Of_Turn: 6 Xsens
+   SG_ gyro_x : 7|16@0- (0.01,0) [-100000|100000] "rad/s" Vector__XXX
+   SG_ gyro_y : 23|16@0- (0.01,0) [-100000|100000] "rad/s" Vector__XXX
+   SG_ gyro_z : 39|16@0- (0.01,0) [-100000|100000] "rad/s" Vector__XXX
+
+BO_ 272 Pressure: 4 Xsens
+   SG_ pressure : 7|32@0+ (1,0) [0|1e+07] "pascals" Vector__XXX
+
+BO_ 291 StatusWord: 4 Xsens
+   SG_ status : 7|32@0+ (1,0) [0|1] "" Vector__XXX
+
+BO_ 1124 Shock_Angles_Front: 4 TelemNode
+   SG_ Front_Shock_Angle_1 : 7|16@0+ (1,0) [0|65535] "" Vector__XXX
+   SG_ Front_Shock_Angle_2 : 23|16@0+ (1,0) [0|65535] "" Vector__XXX
+
+BO_ 1125 Shock_Angles_Rear: 4 TelemNode
+   SG_ Rear_Shock_Angle_1 : 7|16@0+ (1,0) [0|65535] "" Vector__XXX
+   SG_ Rear_Shock_Angle_2 : 23|16@0+ (1,0) [0|65535] "" Vector__XXX
+
+BO_ 1120 Wheel_Speeds_Front: 4 TelemNode
+   SG_ Front_Wheel_Speed_1 : 7|16@0+ (1,0) [0|65535] "cps" Vector__XXX
+   SG_ Front_Wheel_Speed_2 : 23|16@0+ (1,0) [0|65535] "cps" Vector__XXX
+
+BO_ 1121 Wheel_Speeds_Rear: 4 TelemNode
+   SG_ Rear_Wheel_Speed_1 : 7|16@0+ (1,0) [0|65535] "cps" Vector__XXX
+   SG_ Rear_Wheel_Speed_2 : 23|16@0+ (1,0) [0|65535] "cps" Vector__XXX
+
+BO_ 1129 Brake_Temp: 2 TelemNode
+   SG_ Brake_Temp : 7|16@0+ (1,0) [0|65535] "" Vector__XXX
+
+BO_ 1152 Latitude_Longitude: 8 TelemHost
+   SG_ Latitude : 7|32@0- (1e-06,0) [-2.14748e+09|2.14748e+09] "degrees" Vector__XXX
+   SG_ Longitude : 39|32@0- (1e-06,0) [-2.14748e+09|2.14748e+09] "degrees" Vector__XXX
+
+BA_DEF_ BO_ "GenMsgBackgroundColor" STRING ;
+BA_DEF_ BO_ "GenMsgForegroundColor" STRING ;
+BA_DEF_ BO_ "matchingcriteria" INT 0 0;
+BA_DEF_ BO_ "filterlabeling" INT 0 0;
+BA_DEF_ BO_ "GenMsgCycleTime" INT 0 100000;
+BA_DEF_ "BusType" STRING ;
+BA_DEF_ BO_ "matchingcriteria" INT 0 0;
+BA_DEF_ BO_ "filterlabeling" INT 0 0;
+BA_DEF_ BO_ "matchingcriteria" INT 0 0;
+BA_DEF_ BO_ "filterlabeling" INT 0 0;
+BA_DEF_ BO_ "matchingcriteria" INT 0 0;
+BA_DEF_ BO_ "filterlabeling" INT 0 0;
+BA_DEF_ BO_ "matchingcriteria" INT 0 0;
+BA_DEF_ BO_ "filterlabeling" INT 0 0;
+BA_ "GenMsgForegroundColor" BO_ 1894 "#000000";
+BA_ "GenMsgForegroundColor" BO_ 896 "#000000";
+BA_ "GenMsgForegroundColor" BO_ 903 "#000000";
+BA_ "GenMsgForegroundColor" BO_ 1024 "#000000";
+BA_ "GenMsgForegroundColor" BO_ 1026 "#000000";
+BA_ "GenMsgForegroundColor" BO_ 1281 "#000000";
+BA_ "GenMsgForegroundColor" BO_ 899 "#000000";
+BA_ "GenMsgForegroundColor" BO_ 900 "#000000";
+BA_ "GenMsgForegroundColor" BO_ 1282 "#000000";
+BA_ "GenMsgForegroundColor" BO_ 257 "#000000";
+BA_ "GenMsgForegroundColor" BO_ 274 "#000000";
+BA_ "GenMsgForegroundColor" BO_ 295 "#000000";
+BA_ "GenMsgForegroundColor" BO_ 275 "#000000";
+BA_ "GenMsgForegroundColor" BO_ 276 "#000000";
+BA_ "GenMsgForegroundColor" BO_ 273 "#000000";
+BA_ "GenMsgForegroundColor" BO_ 297 "#000000";
+BA_ "GenMsgForegroundColor" BO_ 278 "#000000";
+BA_ "GenMsgForegroundColor" BO_ 272 "#000000";
+BA_ "GenMsgForegroundColor" BO_ 291 "#000000";
+BA_ "GenMsgForegroundColor" BO_ 1124 "#000000";
+BA_ "GenMsgForegroundColor" BO_ 1125 "#000000";
+BA_ "GenMsgForegroundColor" BO_ 1120 "#000000";
+BA_ "GenMsgForegroundColor" BO_ 1121 "#000000";
+BA_ "GenMsgForegroundColor" BO_ 1129 "#000000";
+BA_ "GenMsgForegroundColor" BO_ 1152 "#000000";
+BA_DEF_DEF_ "GenMsgBackgroundColor" "#ffffff";
+BA_DEF_DEF_ "GenMsgForegroundColor" "#000000";
+BA_DEF_DEF_ "matchingcriteria" 0;
+BA_DEF_DEF_ "filterlabeling" 0;
+BA_DEF_DEF_ "GenMsgCycleTime" 0;
+BA_DEF_DEF_ "BusType" "CAN";
