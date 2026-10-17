@@ -30,6 +30,11 @@ volatile uint32_t torque_req = 0;
 #define SMOOTHING_STATE_DOWN 1
 #define SMOOTHING_STATE_UP 2
 
+// to avoid floats, we instead use uint where 0u -> 0f, and (1 << shift_amt) -> 1f
+// for now, we only use this for the power smoothing down calculation
+#define FP_SHIFT_AMT 16 // uint16_t, 1 << 16 = 65536
+
+
 extern volatile uint8_t traction_control_enabled;
 extern volatile int16_t motor_speed;
 extern volatile uint16_t acc_current_adc;
@@ -218,25 +223,39 @@ int16_t requested_throttle(){
 			// usually: will go from 70kW max power to 60kW max power over the course of a few seconds
 
 			uint32_t interval_ms = HAL_GetTick() - smoothing_start_tick;
+			uint32_t target_power = smoothing_prev_max_power - SMOOTHING_POWER_DELTA_W;
 
-			if (interval_ms > SMOOTHING_DOWN_TIME_MS) { // if we have spent enough time smoothing down, can start smoothing up
+			if (interval_ms >= SMOOTHING_DOWN_TIME_MS) { // if we have spent enough time smoothing down, can start smoothing up
 				smoothing_flag = SMOOTHING_STATE_UP;
 				smoothing_start_tick = HAL_GetTick();
-				smoothing_prev_max_power = smoothing_prev_max_power - SMOOTHING_POWER_DELTA_W;
+				smoothing_prev_max_power = target_power;
 			} else {  // else, smooth down by a set amount of motor power (SMOOTHING_POWER_DELTA_W)
-				max_power = smoothing_prev_max_power - abs((float)interval_ms / (float)SMOOTHING_DOWN_TIME_MS) * SMOOTHING_POWER_DELTA_W;
+				// idea: remaining_distance = (max - min) * (1 - progress) ^ steepness
+				// we want our remaining distance from min to start big and exponentially decrease to 0
+
+				 // remaining_ratio = ((total_duration - elapsed) * 65536) / total_duration
+				// This value goes from 65536 down to 0 as time passes (i.e. "1.0 to 0.0")
+				uint32_t remaining_ratio = ( ((uint32_t)SMOOTHING_DOWN_TIME_MS - interval_ms) << FP_SHIFT_AMT ) / SMOOTHING_DOWN_TIME_MS;
+
+				// this is the part that approximates the exponential function using our "fake float"
+				// you can do ratio^4 for a steeper exponential ( i.e. add `exp_factor = (exp_factor * exp_factor) >> FP_SHIFT_AMT)` )
+				uint64_t exp_factor = ((uint64_t)remaining_ratio * remaining_ratio) >> FP_SHIFT_AMT; // ratio^2
+
+				// current_power = target + (total_delta * exp_factor) / 65536
+				max_power = target_power + (int32_t)( ((int64_t)SMOOTHING_POWER_DELTA_W * exp_factor) >> FP_SHIFT_AMT );
 			}
 
-		} else if (smoothing_flag == SMOOTHING_STATE_UP) { // else, we are in the smoothing up sequence
+		} 
+		if (smoothing_flag == SMOOTHING_STATE_UP) { // if we are in the smoothing up sequence (which may have just been started by the if case above in this current call)
 			// usually: will go from 60kW max power back up to 70kW max power
 
 			uint32_t interval_ms = HAL_GetTick() - smoothing_start_tick;
 
-			if (interval_ms > SMOOTHING_UP_TIME_MS) { // if we are done smoothing up, return to normal operation
+			if (interval_ms >= SMOOTHING_UP_TIME_MS) { // if we are done smoothing up, return to normal operation
 				smoothing_flag = SMOOTHING_STATE_NONE;
 				smoothing_start_tick = 0;
 				smoothing_prev_max_power = 0;
-			} else { // else gradually allow more motor power, back up to 60kW
+			} else { // else gradually allow more motor power, back up to 70kW
 				max_power = max_power - (1.0 - (float)interval_ms / (float)SMOOTHING_UP_TIME_MS) * abs(max_power - smoothing_prev_max_power);
 			}
 
@@ -265,9 +284,6 @@ int16_t requested_throttle(){
 			smoothing_flag = SMOOTHING_STATE_DOWN;
 			smoothing_start_tick = HAL_GetTick();
 			smoothing_prev_max_power = max_power;
-
-			// just for this call, limit motor power a lot
-			max_torque = get_max_torque(max_power - SMOOTHING_POWER_DELTA_W);
 		}
 
     } else if (get_accumulator_power() >= ACCUMULATOR_POWER_HARD_LIMIT) { // old method of power limit enforcement
