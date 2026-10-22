@@ -118,7 +118,7 @@ int main(void)
 
   HAL_TIM_Base_Start(&htim1); // TIM1 used for WHEEL_SPEED1
   HAL_TIM_Base_Start(&htim2); // TIM2 used for WHEEL_SPEED2
-  HAL_TIM_OC_Start_IT(&htim3, TIM_CHANNEL_1); // TIM2 CH3 used for sensor timing
+  HAL_TIM_Base_Start(&htim3); // TIM3 used for sensor timing
 
 
   TelemNode_Init();
