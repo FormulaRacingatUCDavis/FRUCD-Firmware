@@ -58,8 +58,6 @@ TIM_HandleTypeDef htim2;
 UART_HandleTypeDef huart1;
 
 /* USER CODE BEGIN PV */
-uint8_t adc_conv_flag = 0;
-uint8_t can_send_flag = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -88,35 +86,35 @@ uint16_t ADC_RES_BUFFER[4];
 // TIM2 CH3 and CH4 interrupts handle CAN and ADC respectively
 void HAL_TIM_OC_DelayElapsedCallback(TIM_HandleTypeDef *htim)
 {
-    if (htim->Instance == TIM2)
-    {
-
-        // CAN
-        if (htim->Channel == HAL_TIM_ACTIVE_CHANNEL_3)
-        {
-            uint32_t ccr1_val = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_3);
-            ccr1_val = (ccr1_val + CAN_SEND_DELAY) % __HAL_TIM_GET_AUTORELOAD(htim);
-            __HAL_TIM_SET_COMPARE(htim, TIM_CHANNEL_3, ccr1_val);
-
-            // this code will run at frequency set above
-            if (can_send_flag == 0) {
-            	can_send_flag = 1;
-            }
-        }
-
-        // ADC
-        else if (htim->Channel == HAL_TIM_ACTIVE_CHANNEL_4)
-        {
-            uint32_t ccr2_val = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_4);
-            ccr2_val = (ccr2_val + ADC_CONV_DELAY) % __HAL_TIM_GET_AUTORELOAD(htim);
-            __HAL_TIM_SET_COMPARE(htim, TIM_CHANNEL_4, ccr2_val);
-
-            // this code will run at frequency set above
-            if (adc_conv_flag == 0) {
-            	adc_conv_flag = 1;
-			}
-        }
-    }
+//    if (htim->Instance == TIM2)
+//    {
+//
+//        // CAN
+//        if (htim->Channel == HAL_TIM_ACTIVE_CHANNEL_3)
+//        {
+//            uint32_t ccr1_val = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_3);
+//            ccr1_val = (ccr1_val + CAN_SEND_DELAY) % __HAL_TIM_GET_AUTORELOAD(htim);
+//            __HAL_TIM_SET_COMPARE(htim, TIM_CHANNEL_3, ccr1_val);
+//
+//            // this code will run at frequency set above
+//            if (can_send_flag == 0) {
+//            	can_send_flag = 1;
+//            }
+//        }
+//
+//        // ADC
+//        else if (htim->Channel == HAL_TIM_ACTIVE_CHANNEL_4)
+//        {
+//            uint32_t ccr2_val = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_4);
+//            ccr2_val = (ccr2_val + ADC_CONV_DELAY) % __HAL_TIM_GET_AUTORELOAD(htim);
+//            __HAL_TIM_SET_COMPARE(htim, TIM_CHANNEL_4, ccr2_val);
+//
+//            // this code will run at frequency set above
+//            if (adc_conv_flag == 0) {
+//            	adc_conv_flag = 1;
+//			}
+//        }
+//    }
 }
 
 /* USER CODE END 0 */
@@ -163,9 +161,6 @@ int main(void)
 
   CAN_Filter_Init(); // hcan1 is PCAN, hcan2 is TCAN
 
-  uint8_t adc_loop_counter = 0;
-  uint8_t can_loop_counter = 0;
-
   Cooling_Init();
 
 
@@ -182,16 +177,16 @@ int main(void)
 	  HAL_GPIO_TogglePin(HEARTBEAT_GPIO_Port, HEARTBEAT_Pin);
 
 	  // ADC Conversions
-	  if (adc_conv_flag == 1) {
-		  HAL_ADC_Start_DMA(&hadc1, (uint32_t*)ADC_RES_BUFFER, 4);
-		  adc_conv_flag = 0;
-	  }
-
-	  // Send temps over CAN
-	  if (can_send_flag == 1) {
-		  CAN_Send_Temp_ADC(&hcan2);
-		  can_send_flag = 0;
-	  }
+//	  if (adc_conv_flag == 1) {
+//		  HAL_ADC_Start_DMA(&hadc1, (uint32_t*)ADC_RES_BUFFER, 4);
+//		  adc_conv_flag = 0;
+//	  }
+//
+//	  // Send temps over CAN
+//	  if (can_send_flag == 1) {
+//		  CAN_Send_Temp_ADC(&hcan2);
+//		  can_send_flag = 0;
+//	  }
 
   }
   /* USER CODE END 3 */
