@@ -28,15 +28,23 @@ extern CAN_HandleTypeDef hcan2;
 
 extern uint16_t ADC_RES_BUFFER[4]; // buffer for ADC DMA
 
+
+volatile ADC_Channel_t adc_channels[NUM_ADC_CHANNELS] = {
+		{TEMP0_CHANNEL, 0, 0}, // TEMP0, 20 Hz
+		{TEMP1_CHANNEL, 0, 0}, // TEMP1, 20 Hz
+		{TEMP2_CHANNEL, 0, 0}, // TEMP2, 20 Hz
+		{TEMP3_CHANNEL, 0, 0} // TEMP3, 20 Hz
+};
+
+
 // PRIVATE GLOBALS
 
 PWM_Output_t pwm_fan;
 PWM_Output_t pwm_pump;
 PWM_Output_t pwm_extra;
 
-uint8_t num_samples;
 
-// average ADC readings
+// ADC readings
 uint16_t adc_temp0 = 0;
 uint16_t adc_temp1 = 0;
 uint16_t adc_temp2 = 0;
@@ -95,6 +103,25 @@ void CAN_Send_Temp_ADC(CAN_HandleTypeDef *hcan) {
 	tx_data[7] = LO8(adc_temp3);
 
 	CAN_Send(hcan, COOLING_LOOP_TEMPS, tx_data, 8);
+}
+
+void Sensor_Update(CAN_HandleTypeDef *hcan) {
+	// any of the temps
+	if (adc_channels[0].flag == 1 || adc_channels[1].flag == 1
+			|| adc_channels[2].flag == 1 || adc_channels[3].flag == 1) {
+		adc_temp0 = adc_channels[0].adc_value;
+		adc_temp1 = adc_channels[1].adc_value;
+		adc_temp2 = adc_channels[2].adc_value;
+		adc_temp3 = adc_channels[3].adc_value;
+
+		CAN_Send_Temp_ADC(hcan);
+
+		// reset flags
+		adc_channels[0].flag = 0;
+		adc_channels[1].flag = 0;
+		adc_channels[2].flag = 0;
+		adc_channels[3].flag = 0;
+	}
 }
 
 void update_pwm(int16_t inlet_temp)
@@ -162,5 +189,28 @@ void set_pump_speed(uint8_t speed)
 void set_fan_speed(uint8_t speed)
 {
 	PWM_SetDutyCycle(&pwm_fan, speed);
+}
+
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+{
+    if (htim->Instance == TIM2) // with PSC = 71 and ARR = 999, TIM2 runs at 1000 Hz
+    {
+    	static uint32_t ticks = 0; // 1000 Hz -> one tick is one ms
+
+    	// 20 Hz -> Period of 50 ms
+    	if (ticks % 50 == 0) {
+    		adc_channels[0].flag = 1; // TEMP0
+    		adc_channels[1].flag = 1; // TEMP1
+    		adc_channels[2].flag = 1; // TEMP2
+    		adc_channels[3].flag = 1; // TEMP3
+    	}
+
+		ticks++;
+		// reset the ticks to keep the modulo math clean
+		// use the lowest common multiple of all periods above
+		if (ticks >= 50) { // all temps sampled at period of 50 ms (20 hz)
+			ticks = 0;
+		}
+    }
 }
 

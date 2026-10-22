@@ -78,44 +78,10 @@ static void MX_TIM2_Init(void);
 /* USER CODE BEGIN 0 */
 uint16_t ADC_RES_BUFFER[4];
 	// 4 channels:
-	// [0] = inlet_temp
-	// [1] = outlet_temp
-	// [2] = air_in_temp
-	// [3] = air_out_temp
-
-// TIM2 CH3 and CH4 interrupts handle CAN and ADC respectively
-void HAL_TIM_OC_DelayElapsedCallback(TIM_HandleTypeDef *htim)
-{
-//    if (htim->Instance == TIM2)
-//    {
-//
-//        // CAN
-//        if (htim->Channel == HAL_TIM_ACTIVE_CHANNEL_3)
-//        {
-//            uint32_t ccr1_val = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_3);
-//            ccr1_val = (ccr1_val + CAN_SEND_DELAY) % __HAL_TIM_GET_AUTORELOAD(htim);
-//            __HAL_TIM_SET_COMPARE(htim, TIM_CHANNEL_3, ccr1_val);
-//
-//            // this code will run at frequency set above
-//            if (can_send_flag == 0) {
-//            	can_send_flag = 1;
-//            }
-//        }
-//
-//        // ADC
-//        else if (htim->Channel == HAL_TIM_ACTIVE_CHANNEL_4)
-//        {
-//            uint32_t ccr2_val = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_4);
-//            ccr2_val = (ccr2_val + ADC_CONV_DELAY) % __HAL_TIM_GET_AUTORELOAD(htim);
-//            __HAL_TIM_SET_COMPARE(htim, TIM_CHANNEL_4, ccr2_val);
-//
-//            // this code will run at frequency set above
-//            if (adc_conv_flag == 0) {
-//            	adc_conv_flag = 1;
-//			}
-//        }
-//    }
-}
+	// [0] = inlet_temp (temp0)
+	// [1] = outlet_temp (temp1)
+	// [2] = air_in_temp (temp2)
+	// [3] = air_out_temp (temp3)
 
 /* USER CODE END 0 */
 
@@ -156,8 +122,7 @@ int main(void)
   MX_USART1_UART_Init();
   MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
-  HAL_TIM_OC_Start_IT(&htim2, TIM_CHANNEL_3); // TIM2 CH3 is for CAN
-  HAL_TIM_OC_Start_IT(&htim2, TIM_CHANNEL_4); // TIM2 CH4 is for ADC
+  HAL_TIM_Base_Start(&htim2); // TIM2 is for sensor timing
 
   CAN_Filter_Init(); // hcan1 is PCAN, hcan2 is TCAN
 
@@ -174,19 +139,36 @@ int main(void)
 
     /* USER CODE BEGIN 3 */
 	  Cooling_Update();
-	  HAL_GPIO_TogglePin(HEARTBEAT_GPIO_Port, HEARTBEAT_Pin);
 
-	  // ADC Conversions
-//	  if (adc_conv_flag == 1) {
-//		  HAL_ADC_Start_DMA(&hadc1, (uint32_t*)ADC_RES_BUFFER, 4);
-//		  adc_conv_flag = 0;
-//	  }
-//
-//	  // Send temps over CAN
-//	  if (can_send_flag == 1) {
-//		  CAN_Send_Temp_ADC(&hcan2);
-//		  can_send_flag = 0;
-//	  }
+	  // update the ADC readings
+	  for (int i = 0; i < NUM_ADC_CHANNELS; i++) {
+
+		  if (adc_channels[i].flag == 1) {
+			  // prepare new conversion settings
+			  ADC_ChannelConfTypeDef sConfig = {0};
+			  sConfig.Channel = adc_channels[i].channel_number;
+			  sConfig.Rank = 1; // always Rank 1 since Scan Mode is Disabled
+			  sConfig.SamplingTime = ADC_SAMPLETIME_56CYCLES;
+			  HAL_ADC_ConfigChannel(&hadc1, &sConfig);
+
+			  //cycle the ADC State Machine to apply settings
+			  HAL_ADC_Start(&hadc1);
+
+			  // block for ~5 microseconds until conversion finishes
+			  if (HAL_ADC_PollForConversion(&hadc1, 10) == HAL_OK) {
+			  	  adc_channels[i].adc_value = HAL_ADC_GetValue(&hadc1); // save the fresh data
+			  }
+
+			  HAL_ADC_Stop(&hadc1); // turn off state machine until next flag hits
+		  }
+
+	  }
+
+	  // send sensor readings over TCAN
+	  Sensor_Update(&hcan2);
+
+
+	  HAL_GPIO_TogglePin(HEARTBEAT_GPIO_Port, HEARTBEAT_Pin);
 
   }
   /* USER CODE END 3 */
@@ -477,15 +459,14 @@ static void MX_TIM2_Init(void)
 
   TIM_ClockConfigTypeDef sClockSourceConfig = {0};
   TIM_MasterConfigTypeDef sMasterConfig = {0};
-  TIM_OC_InitTypeDef sConfigOC = {0};
 
   /* USER CODE BEGIN TIM2_Init 1 */
 
   /* USER CODE END TIM2_Init 1 */
   htim2.Instance = TIM2;
-  htim2.Init.Prescaler = 8399;
+  htim2.Init.Prescaler = 71;
   htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim2.Init.Period = 4294967295;
+  htim2.Init.Period = 999;
   htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim2.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
   if (HAL_TIM_Base_Init(&htim2) != HAL_OK)
@@ -497,25 +478,9 @@ static void MX_TIM2_Init(void)
   {
     Error_Handler();
   }
-  if (HAL_TIM_OC_Init(&htim2) != HAL_OK)
-  {
-    Error_Handler();
-  }
   sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
   sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
   if (HAL_TIMEx_MasterConfigSynchronization(&htim2, &sMasterConfig) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  sConfigOC.OCMode = TIM_OCMODE_TIMING;
-  sConfigOC.Pulse = 2000;
-  sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
-  sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
-  if (HAL_TIM_OC_ConfigChannel(&htim2, &sConfigOC, TIM_CHANNEL_3) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  if (HAL_TIM_OC_ConfigChannel(&htim2, &sConfigOC, TIM_CHANNEL_4) != HAL_OK)
   {
     Error_Handler();
   }
