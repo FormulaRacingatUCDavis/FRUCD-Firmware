@@ -44,8 +44,9 @@ _Min_Stack_Size = 0x400; /* required amount of stack */
 /* Memories definition */
 MEMORY
 {
-  RAM    (xrw)    : ORIGIN = 0x20000000,   LENGTH = 320K
-  FLASH    (rx)    : ORIGIN = 0x8000000,   LENGTH = 1024K
+  DTCMRAM   (rw)    : ORIGIN = 0x20000000,  LENGTH = 64K
+  RAM       (xrw)   : ORIGIN = 0x20001000,  LENGTH = 256K
+  FLASH     (rx)    : ORIGIN = 0x8000000,   LENGTH = 1024K
 }
 
 /* Sections */
@@ -172,6 +173,14 @@ SECTIONS
     . = . + _Min_Stack_Size;
     . = ALIGN(8);
   } >RAM
+
+  /* DTCMRAM section, used to specify which variables should be placed in DTCM RAM by the linker */
+  .dtcm_noinit (NOLOAD) :
+  {
+      . = ALIGN(4);
+      *(.dtcm_noinit)
+      . = ALIGN(4);
+  } >DTCMRAM
 
   /* Remove information from the compiler libraries */
   /DISCARD/ :
