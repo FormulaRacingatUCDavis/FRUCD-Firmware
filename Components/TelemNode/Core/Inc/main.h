@@ -65,10 +65,14 @@ void Error_Handler(void);
 #define SHOCK_ANGLE2_GPIO_Port GPIOA
 #define BRAKE_TEMP_Pin GPIO_PIN_0
 #define BRAKE_TEMP_GPIO_Port GPIOB
+#define ADDRESS_BIT1_Pin GPIO_PIN_2
+#define ADDRESS_BIT1_GPIO_Port GPIOB
 #define HEARTBEAT_Pin GPIO_PIN_12
 #define HEARTBEAT_GPIO_Port GPIOB
 #define WHEEL_SPEED1_Pin GPIO_PIN_8
 #define WHEEL_SPEED1_GPIO_Port GPIOA
+#define ADDRESS_BIT0_Pin GPIO_PIN_4
+#define ADDRESS_BIT0_GPIO_Port GPIOB
 
 /* USER CODE BEGIN Private defines */
 

@@ -72,8 +72,10 @@ typedef enum{
 } TCAN_ID;
 
 typedef enum {
-	LOCATION_FRONT,
-	LOCATION_REAR,
+	LOCATION_FRONT_LEFT, // 00
+	LOCATION_FRONT_RIGHT, // 01
+	LOCATION_REAR_LEFT, // 10
+	LOCATION_REAR_RIGHT, // 11
 } TelemNodeLocation_t;
 
 

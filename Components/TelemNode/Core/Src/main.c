@@ -472,6 +472,12 @@ static void MX_GPIO_Init(void)
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(HEARTBEAT_GPIO_Port, HEARTBEAT_Pin, GPIO_PIN_RESET);
 
+  /*Configure GPIO pins : ADDRESS_BIT1_Pin ADDRESS_BIT0_Pin */
+  GPIO_InitStruct.Pin = ADDRESS_BIT1_Pin|ADDRESS_BIT0_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
   /*Configure GPIO pin : HEARTBEAT_Pin */
   GPIO_InitStruct.Pin = HEARTBEAT_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;

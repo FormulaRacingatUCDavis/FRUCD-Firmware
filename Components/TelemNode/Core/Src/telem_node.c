@@ -12,7 +12,7 @@
 #define LO8(x) (x&0xFF);
 
 
-TelemNodeLocation_t location = LOCATION_FRONT;
+TelemNodeLocation_t location = LOCATION_FRONT_LEFT; // 00
 
 // HANDLE TYPE DEFS from main
 extern ADC_HandleTypeDef hadc1;
@@ -43,6 +43,17 @@ void TelemNode_Init(){
 
 	WheelSpeed_Init(&wheel_1, &htim1);
 	WheelSpeed_Init(&wheel_2, &htim2);
+
+	// Initialize address using switches
+	// location is initialized to 0b00 (FL)
+	// addresses: (front left, front right, rear left, rear right)
+	// bit1:bit0  	 00				01			10			11
+	if (HAL_GPIO_ReadPin(ADDRESS_BIT0_Port, ADDRESS_BIT0_Pin) == GPIO_PIN_SET) {
+		location |= 0b01;
+	}
+	if (HAL_GPIO_ReadPin(ADDRESS_BIT1_Port, ADDRESS_BIT1_Pin) == GPIO_PIN_SET) {
+		location |= 0b10;
+	}
 }
 
 
@@ -60,7 +71,7 @@ void TelemNode_Update()
 		tx_data[2] = HI8(shock_angle2);
 		tx_data[3] = LO8(shock_angle2);
 
-		if (location == LOCATION_FRONT) {
+		if (location == LOCATION_FRONT_LEFT) { // TODO USE 4 LOCATIONS
 			CAN_Send(SHOCK_ANGLES_FRONT, tx_data, 4);
 		} else {
 			CAN_Send(SHOCK_ANGLES_REAR, tx_data, 4);
@@ -77,7 +88,7 @@ void TelemNode_Update()
 	if (adc_channels[3].flag == 1) {
 		uint16_t brake_temp = adc_channels[3].adc_value;
 
-		if (location == LOCATION_FRONT) {
+		if (location == LOCATION_FRONT_LEFT) { // TODO USE 4 LOCATIONS
 			tx_data[0] = HI8(brake_temp);
 			tx_data[1] = LO8(brake_temp);
 			tx_data[2] = 0;
@@ -99,7 +110,7 @@ void TelemNode_Update()
 		tx_data[1] = LO8(wheel_speed_1);
 		tx_data[2] = HI8(wheel_speed_2);
 		tx_data[3] = LO8(wheel_speed_2);
-		if (location == LOCATION_FRONT) {
+		if (location == LOCATION_FRONT_LEFT) { // TODO USE 4 LOCATIONS
 			CAN_Send(WHEEL_SPEEDS_FRONT, tx_data, 4);
 		} else {
 			CAN_Send(WHEEL_SPEEDS_REAR, tx_data, 4);
