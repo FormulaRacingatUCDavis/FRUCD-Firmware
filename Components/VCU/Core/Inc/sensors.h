@@ -47,6 +47,11 @@ extern volatile uint32_t torque_percentage;
 extern volatile uint32_t launch_control_param;
 extern volatile uint32_t regen_braking_param;
 
+extern volatile uint32_t prev_knob1_percentage;
+extern volatile uint32_t prev_knob2_percentage;
+extern volatile uint32_t knob1_percentage;
+extern volatile uint32_t knob2_percentage;
+
 extern volatile uint32_t lv_battery_measure_adc;
 
 typedef enum {

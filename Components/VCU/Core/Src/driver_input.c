@@ -98,6 +98,18 @@ void on_button_enabled(button_id_t enabled_id) {
 void on_button_disabled(button_id_t disabled_id) {
 	switch (disabled_id) {
 		case DEBUG_BUTTON:
+			// display mode should change on every button press
+			// each button press toggles between enabled and disabled
+			if (dashboard_display_mode == DISPLAY_DRIVE) {
+				dashboard_display_mode = DISPLAY_DEBUG;
+			} else if (dashboard_display_mode == DISPLAY_DEBUG) {
+				dashboard_display_mode = DISPLAY_PRACTICE;
+			} else if (dashboard_display_mode == DISPLAY_PRACTICE) {
+				dashboard_display_mode = DISPLAY_DRIVE;
+			} else {
+				dashboard_display_mode = DISPLAY_DRIVE; // just in case, default to drive display mode
+			}
+
 			can_tx_buttons_and_knobs(&hcan1);
 			break;
 		case TC_BUTTON:

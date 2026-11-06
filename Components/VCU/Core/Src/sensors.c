@@ -16,10 +16,12 @@ CALIBRATED_SENSOR_t throttle2; //APPS2
 CALIBRATED_SENSOR_t brake1; //BSE_F
 CALIBRATED_SENSOR_t brake2; //BSE_R
 CALIBRATED_SENSOR_t brake; // used in actual calculations
+volatile uint32_t prev_knob1_percentage;
+volatile uint32_t prev_knob2_percentage;
+volatile uint32_t knob1_percentage;
+volatile uint32_t knob2_percentage;
 volatile uint32_t torque_percentage = 0;
 volatile uint32_t launch_control_param = 0;
-volatile uint32_t prev_torque_percentage = 0;
-volatile uint32_t prev_launch_control_param = 0;
 volatile uint32_t regen_braking_param = 0;
 volatile uint32_t torque_req = 0;
 
@@ -176,14 +178,24 @@ void update_sensor_vals(ADC_HandleTypeDef *hadc1, ADC_HandleTypeDef *hadc3) {
     update_brake(); // compare the two BSEs to get "one" brake sensor
 
     // knobs
-    prev_torque_percentage = torque_percentage;
-	prev_launch_control_param = launch_control_param;
-    torque_percentage = get_adc_conversion(hadc1, KNOB2) * 100 / 4095;
-    launch_control_param = get_adc_conversion(hadc1, KNOB1) * 100 / 4095;
+    prev_knob1_percentage = knob1_percentage;
+	prev_knob2_percentage = knob2_percentage;
+	knob1_percentage = get_adc_conversion(hadc1, KNOB1) * 100 / 4095;
+    knob2_percentage = get_adc_conversion(hadc1, KNOB2) * 100 / 4095;
 
-    if (ALLOW_REGEN_KNOB_TUNING) {
-    	regen_braking_param = get_adc_conversion(hadc1, KNOB1) * 100 / 4095;
+    // knob2 (torque)
+    torque_percentage = knob2_percentage;
+
+    // knob1 (regen OR launch control)
+    if (dashboard_display_mode == DISPLAY_DEBUG) {
+    	// tune launch control param when in debug mode
+    	launch_control_param = knob1_percentage;
+    } else if (ALLOW_REGEN_KNOB_TUNING) {
+    	// if not in debug mode and regen tuning is allowed
+    	regen_braking_param = knob1_percentage;
     }
+
+
 }
 
 void read_lv_battery(ADC_HandleTypeDef *hadc3) {

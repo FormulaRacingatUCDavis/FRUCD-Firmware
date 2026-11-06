@@ -118,8 +118,6 @@ unsigned int discrepancy_timer_ms = 0;
 
 extern volatile uint32_t torque_percentage;
 extern volatile uint32_t launch_control_param;
-extern volatile uint32_t prev_torque_percentage;
-extern volatile uint32_t prev_launch_control_param;
 /* USER CODE END 0 */
 
 /**
@@ -233,7 +231,7 @@ int main(void)
 
 	// send driver inputs to raspi on change OR if configured to constantly send
 	if (ALWAYS_SEND_DRIVER_INPUTS ||
-		(torque_percentage != prev_torque_percentage || launch_control_param != prev_launch_control_param) ) {
+		(knob1_percentage != prev_knob1_percentage || knob2_percentage != prev_knob2_percentage) ) {
 		can_tx_buttons_and_knobs(&hcan1);
 	}
 
