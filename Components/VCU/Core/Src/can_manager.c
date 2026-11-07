@@ -382,12 +382,11 @@ void can_clear_MC_fault(CAN_HandleTypeDef *hcan) {
 void can_tx_buttons_and_knobs(CAN_HandleTypeDef *hcan) {
 //	uint16_t torque_limit_raw = (uint16_t)(torque_percentage / 100 * 4095);
 //	uint16_t launch_control_param_raw = (uint16_t)(launch_control_param / 100 * 4095);
-	uint8_t practice_mode_bit = dashboard_display_mode; // 00 = drive, 01 = debug, 10 = practice;
-	uint8_t debug_mode_bit = is_button_enabled(DEBUG_BUTTON) << 3;
+	uint8_t display_mode_bits = dashboard_display_mode << 3; // 00 = drive, 01 = debug, 10 = practice;
 	uint8_t tc_button_bit = is_button_enabled(TC_BUTTON) << 2;
 	uint8_t marker_button_bit = is_button_enabled(MARKER_BUTTON) << 1;
 	uint8_t overtake_button_bit = is_button_enabled(OVERTAKE_BUTTON);
-	uint8_t button_flags = 0 | practice_mode_bit | debug_mode_bit | tc_button_bit | marker_button_bit | overtake_button_bit;
+	uint8_t button_flags = 0 | display_mode_bits | tc_button_bit | marker_button_bit | overtake_button_bit;
 		uint8_t data[8] = {
 //			torque_limit_raw >> 8,
 //			torque_limit_raw & 0xFF,
