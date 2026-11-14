@@ -147,7 +147,7 @@ void imu_callback(XsensEventFlag_t event, XsensEventData_t *mtdata)
                     if ( mtdata->type == XSENS_EVT_TYPE_U16 )
                     {
                         uint16_t packet_count = mtdata->data.u2;
-                        uint8_t data[4] = {0};
+                        uint8_t data[8] = {0}; //  2 bytes
                         data[0] = HI8(packet_count);
                         data[1] = LO8(packet_count);
 
@@ -168,7 +168,7 @@ void imu_callback(XsensEventFlag_t event, XsensEventData_t *mtdata)
                         int16_t ang_y = (int16_t)(mtdata->data.f4x3[1] * 100);
                         int16_t ang_z = (int16_t)(mtdata->data.f4x3[2] * 100);
 
-                        uint8_t data[8] = {0};
+                        uint8_t data[8] = {0}; // 6 bytes
                         data[0] = HI8(ang_x);
                         data[1] = LO8(ang_x);
                         data[2] = HI8(ang_y);
@@ -190,7 +190,7 @@ void imu_callback(XsensEventFlag_t event, XsensEventData_t *mtdata)
                     if (mtdata->type == XSENS_EVT_TYPE_U32 )
                     {
                         uint32_t pressure = mtdata->data.u4;
-                        uint8_t data[4] = {0};
+                        uint8_t data[8] = {0}; //  4 bytes
                         data[0] = (pressure >> 24) & 0xFF;
                         data[1] = (pressure >> 16) & 0xFF;
                         data[2] = (pressure >> 8)  & 0xFF;
@@ -214,7 +214,7 @@ void imu_callback(XsensEventFlag_t event, XsensEventData_t *mtdata)
                         int16_t delta3 = (int16_t)(mtdata->data.f4x4[2] * 100);
                         int16_t delta4 = (int16_t)(mtdata->data.f4x4[3] * 100);
 
-                        uint8_t data[8] = {0};
+                        uint8_t data[8] = {0}; // 8 bytes
                         data[0] = HI8(delta1);
                         data[1] = LO8(delta1);
                         data[2] = HI8(delta2);
@@ -239,7 +239,7 @@ void imu_callback(XsensEventFlag_t event, XsensEventData_t *mtdata)
                     {
                         int32_t lat = (int32_t)(mtdata->data.f4x2[0] * 10000);
                         int32_t lon = (int32_t)(mtdata->data.f4x2[1] * 10000);
-                        uint8_t data[8] = {0};
+                        uint8_t data[8] = {0}; // 8 bytes
 
                         data[0] = (lat >> 24) & 0xFF;
                         data[1] = (lat >> 16) & 0xFF;
@@ -267,7 +267,7 @@ void imu_callback(XsensEventFlag_t event, XsensEventData_t *mtdata)
                         int16_t accY = (int16_t)(mtdata->data.f4x3[1] * 100);
                         int16_t accZ = (int16_t)(mtdata->data.f4x3[2] * 100);
 
-                        uint8_t data[6] = {0};
+                        uint8_t data[8] = {0}; // 6 bytes
                         data[0] = HI8(accX);
                         data[1] = LO8(accX);
                         data[2] = HI8(accY);
@@ -292,7 +292,7 @@ void imu_callback(XsensEventFlag_t event, XsensEventData_t *mtdata)
                         int16_t acc_y = (int16_t)(mtdata->data.f4x3[1] * 100);
                         int16_t acc_z = (int16_t)(mtdata->data.f4x3[2] * 100);
 
-                        uint8_t data[8] = {0};
+                        uint8_t data[8] = {0}; // 6 bytes
                         data[0] = HI8(acc_x);
                         data[1] = LO8(acc_x);
                         data[2] = HI8(acc_y);
@@ -317,7 +317,7 @@ void imu_callback(XsensEventFlag_t event, XsensEventData_t *mtdata)
                         int16_t dVY = (int16_t)(mtdata->data.f4x3[1] * 100);
                         int16_t dVZ = (int16_t)(mtdata->data.f4x3[2] * 100);
 
-                        uint8_t data[8] = {0};
+                        uint8_t data[8] = {0}; // 6 bytes
                         data[0] = HI8(dVX);
                         data[1] = LO8(dVX);
                         data[2] = HI8(dVY);
@@ -339,7 +339,7 @@ void imu_callback(XsensEventFlag_t event, XsensEventData_t *mtdata)
                     if ( mtdata->type == XSENS_EVT_TYPE_U8 )
                     {
                         uint8_t status_byte = mtdata->data.u1;
-                        uint8_t data[8] = {0};
+                        uint8_t data[8] = {0}; // 1 byte
                         data[0] = status_byte;
 
 //                        sd_card_write_data(0x122, data);
@@ -356,7 +356,7 @@ void imu_callback(XsensEventFlag_t event, XsensEventData_t *mtdata)
                     if ( mtdata->type == XSENS_EVT_TYPE_U32 )
                     {
                         uint32_t status_word = mtdata->data.u4;
-                        uint8_t data[8] = {0};
+                        uint8_t data[8] = {0}; // 4 bytes
                         data[0] = (status_word >> 24) & 0xFF;
                         data[1] = (status_word >> 16) & 0xFF;
                         data[2] = (status_word >> 8)  & 0xFF;
@@ -376,7 +376,7 @@ void imu_callback(XsensEventFlag_t event, XsensEventData_t *mtdata)
                     if ( mtdata->type == XSENS_EVT_TYPE_U32 )
                     {
                         uint32_t dev_id = mtdata->data.u4;
-                        uint8_t data[8] = {0};
+                        uint8_t data[8] = {0}; // 4 bytes
                         data[0] = (dev_id >> 24) & 0xFF;
                         data[1] = (dev_id >> 16) & 0xFF;
                         data[2] = (dev_id >> 8)  & 0xFF;
@@ -396,7 +396,7 @@ void imu_callback(XsensEventFlag_t event, XsensEventData_t *mtdata)
                     if ( mtdata->type == XSENS_EVT_TYPE_U16 )
                     {
                         uint16_t location = mtdata->data.u2;
-                        uint8_t data[8] = {0};
+                        uint8_t data[8] = {0}; //  2 bytes
                         data[0] = HI8(location);
                         data[1] = LO8(location);
 
@@ -417,7 +417,7 @@ void imu_callback(XsensEventFlag_t event, XsensEventData_t *mtdata)
                         int16_t ecef_y = (int16_t)(mtdata->data.f4x3[1] * 100);
                         int16_t ecef_z = (int16_t)(mtdata->data.f4x3[2] * 100);
 
-                        uint8_t data[8] = {0};
+                        uint8_t data[8] = {0}; // 6 bytes
                         data[0] = HI8(ecef_x);
                         data[1] = LO8(ecef_x);
                         data[2] = HI8(ecef_y);
@@ -431,7 +431,7 @@ void imu_callback(XsensEventFlag_t event, XsensEventData_t *mtdata)
 //							CAN_Send(&hcan1, 0x987, data, 6);
 //							prev_sends[13] = HAL_GetTick();
 //						}
-                        CAN_Send(&hcan1, 0x987, data, 6);
+                        CAN_Send(&hcan1, 0x130, data, 6);
                     }
                     break;
 
@@ -442,7 +442,7 @@ void imu_callback(XsensEventFlag_t event, XsensEventData_t *mtdata)
                         int16_t accY = (int16_t)(mtdata->data.f4x3[1] * 100);
                         int16_t accZ = (int16_t)(mtdata->data.f4x3[2] * 100);
 
-                        uint8_t data[8] = {0};
+                        uint8_t data[8] = {0}; // 6 bytes
                         data[0] = HI8(accX);
                         data[1] = LO8(accX);
                         data[2] = HI8(accY);
@@ -467,7 +467,7 @@ void imu_callback(XsensEventFlag_t event, XsensEventData_t *mtdata)
                         int16_t gyrY = (int16_t)(mtdata->data.f4x3[1] * 100);
                         int16_t gyrZ = (int16_t)(mtdata->data.f4x3[2] * 100);
 
-                        uint8_t data[8] = {0};
+                        uint8_t data[8] = {0}; // 6 bytes
                         data[0] = HI8(gyrX);
                         data[1] = LO8(gyrX);
                         data[2] = HI8(gyrY);
@@ -492,7 +492,7 @@ void imu_callback(XsensEventFlag_t event, XsensEventData_t *mtdata)
                         int16_t gyrY = (int16_t)(mtdata->data.f4x3[1] * 100);
                         int16_t gyrZ = (int16_t)(mtdata->data.f4x3[2] * 100);
 
-                        uint8_t data[8] = {0};
+                        uint8_t data[8] = {0}; // 6 bytes
                         data[0] = HI8(gyrX);
                         data[1] = LO8(gyrX);
                         data[2] = HI8(gyrY);
@@ -514,7 +514,7 @@ void imu_callback(XsensEventFlag_t event, XsensEventData_t *mtdata)
                     if( mtdata->type == XSENS_EVT_TYPE_U32 )
                     {
                         uint32_t pulse = mtdata->data.u4;
-                        uint8_t data[4] = {0};
+                        uint8_t data[8] = {0}; // 4 bytes
                         data[0] = pulse & 0xFF;
                         data[1] = (pulse >> 8) & 0xFF;
                         data[2] = (pulse >> 16) & 0xFF;
@@ -537,7 +537,7 @@ void imu_callback(XsensEventFlag_t event, XsensEventData_t *mtdata)
                         int16_t magY = (int16_t)(mtdata->data.f4x3[1] * 100);
                         int16_t magZ = (int16_t)(mtdata->data.f4x3[2] * 100);
 
-                        uint8_t data[8] = {0};
+                        uint8_t data[8] = {0}; // 6 bytes
                         data[0] = HI8(magX);
                         data[1] = LO8(magX);
                         data[2] = HI8(magY);
@@ -559,7 +559,7 @@ void imu_callback(XsensEventFlag_t event, XsensEventData_t *mtdata)
                     if ( mtdata->type == XSENS_EVT_TYPE_FLOAT )
                     {
                         int16_t alt = (int16_t)(mtdata->data.f4 * 100);
-                        uint8_t data[8] = {0};
+                        uint8_t data[8] = {0}; // 2 bytes
                         data[0] = HI8(alt);
                         data[1] = LO8(alt);
 
@@ -579,7 +579,7 @@ void imu_callback(XsensEventFlag_t event, XsensEventData_t *mtdata)
                         int16_t vel_x = (int16_t)(mtdata->data.f4x3[0] * 100);
                         int16_t vel_y = (int16_t)(mtdata->data.f4x3[1] * 100);
                         int16_t vel_z = (int16_t)(mtdata->data.f4x3[2] * 100);
-                        uint8_t data[8] = {0};
+                        uint8_t data[8] = {0}; // 6 bytes
                         data[0] = HI8(vel_x);
                         data[1] = LO8(vel_x);
                         data[2] = HI8(vel_y);
