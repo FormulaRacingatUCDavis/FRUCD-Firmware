@@ -30,6 +30,7 @@
 #include "xsens.h"
 #include "serial_print.h"
 #include "config.h"
+#include "itcm.h"
 
 //#include "mqtt_conn.h"
 //
@@ -123,7 +124,8 @@ int main(void)
 {
 
   /* USER CODE BEGIN 1 */
-
+  // Initializes the itcm ram from FLASH
+  itcm_init();
   /* USER CODE END 1 */
 
   /* MPU Configuration--------------------------------------------------------*/

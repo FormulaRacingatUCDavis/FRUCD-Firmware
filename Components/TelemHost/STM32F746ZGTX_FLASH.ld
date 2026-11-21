@@ -44,9 +44,10 @@ _Min_Stack_Size = 0x400; /* required amount of stack */
 /* Memories definition */
 MEMORY
 {
+  ITCMRAM   (xrw)   : ORIGIN = 0x00000000,  LENGTH = 16K
   DTCMRAM   (rw)    : ORIGIN = 0x20000000,  LENGTH = 64K
   RAM       (xrw)   : ORIGIN = 0x20001000,  LENGTH = 256K
-  FLASH     (rx)    : ORIGIN = 0x8000000,   LENGTH = 1024K
+  FLASH     (rx)    : ORIGIN = 0x08000000,  LENGTH = 1024K
 }
 
 /* Sections */
@@ -181,6 +182,20 @@ SECTIONS
       *(.dtcm_noinit)
       . = ALIGN(4);
   } >DTCMRAM
+
+  /* ITCMRAM section, gathers intructions that should be kept in ITCM. */
+  .itcm_text :
+  {
+      . = ALIGN(4);
+      _itcm_start_ = .;
+      *(.itcm_text)
+      (.itcm_text.*)
+      . = ALIGN(4);
+      _itcm_end_ = .;
+  } >ITCMRAM AT>FLASH
+
+  /* Gets the address of the itcm section in flash memory. */
+  _itcm_load_ = LOADADDR(.itcm_text);
 
   /* Remove information from the compiler libraries */
   /DISCARD/ :
